@@ -6,7 +6,7 @@ Multiboxing works by closing the "AN-Mutex-Window-Guild Wars 2" handle of
 Script stores all variables using JSON format in a file named data.json
     which is located in the same directory as the script.
 
-Variables:
+Global Variables:
 - handle: path to handle.exe file
     https://technet.microsoft.com/en-us/sysinternals/handle.aspx
 - localPath: the path to the directory where the Local.dat file is located
@@ -17,3 +17,4 @@ Variables:
     https://wiki.guildwars2.com/wiki/Command_line_arguments
 - multiparams: Guild Wars 2 launch parameters for multibox launch
     "-shareArchive" is added automatically
+- datLocal: Path to Local.dat file. Set automatically using localPath

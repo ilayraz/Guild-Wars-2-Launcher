@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 """
     Guild Wars 2 multiaccount launcher and multiboxer.
     Requires administrator mode.
@@ -7,7 +9,7 @@
     Script stores all variables using JSON format in a file named data.json
         which is located in the same directory as the script.
 
-    Variables:
+    Global Variables:
     - handle: path to handle.exe file
         https://technet.microsoft.com/en-us/sysinternals/handle.aspx
     - localPath: the path to the directory where the Local.dat file is located
@@ -18,6 +20,7 @@
         https://wiki.guildwars2.com/wiki/Command_line_arguments
     - multiparams: Guild Wars 2 launch parameters for multibox launch
         "-shareArchive" is added automatically
+    - datLocal: Path to Local.dat file. Set automatically using localPath
 """
 
 import os
@@ -95,15 +98,20 @@ def newUser():
     startSingle(datFile)
 
 
+def linkDat(datFile):
+    """ Create a symbolic link between datFile and datLocal """
+    try:
+        os.remove(datLocal)
+    except FileNotFoundError:
+        pass
+    os.symlink(datFile, datLocal)
+
+
 def startSingle(datFile=None, multi=False):
     """ Starts a single game instance """
     # Create symbolic link from datFile to datLocal
     if datFile:
-        try:
-            os.remove(datLocal)
-        except FileNotFoundError:
-            pass
-        os.symlink(datFile, datLocal)
+        linkDat(datFile)
 
     if multi:
         command = [exePath] + multiparams
@@ -111,7 +119,6 @@ def startSingle(datFile=None, multi=False):
         command = [exePath] + params
     # Launch game instance with correct parameters
     subprocess.Popen(command)
-
 
 def multibox(users):
     """ Multibox main """
@@ -147,6 +154,10 @@ def multibox(users):
     # map .dat files location over their index
     choices = list(map(lambda x: users[x - 2], choices))
 
+    # update all the game file
+    for choice in choices:
+        updateGame(choice)
+
     # get the instances started
     for choice in choices:
         startMulti(choice)
@@ -180,8 +191,10 @@ def shutMutex():
     subprocess.call(" ".join(command))
 
 
-def updateGame():
+def updateGame(datFile=None):
     """ Update game client """
+    if datFile:
+        linkDat(datFile)
     command = [exePath, "-image"]
     subprocess.call(command)
 
