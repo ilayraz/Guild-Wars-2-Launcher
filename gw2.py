@@ -120,6 +120,7 @@ def startSingle(datFile=None, multi=False):
     # Launch game instance with correct parameters
     subprocess.Popen(command)
 
+
 def multibox(users):
     """ Multibox main """
     updateGame()
@@ -147,7 +148,7 @@ def multibox(users):
 
         # Turn user input into integer array
         try:
-            choices = list(map(lambda x: int(x), choices.split()))
+            choices = list(map(int, choices.split()))
         except ValueError:
             choices = list()
 
